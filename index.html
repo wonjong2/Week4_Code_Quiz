@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Quiz</title>
+    <link rel="stylesheet" href="./assets/css/reset.css" />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+</head>
+<body>
+    <!-- Area for the 'View Highscore' and 'Time:XX' -->
+    <header>
+        <h1 id="highscore">View Highscore</h1>
+        <h1 id="time"></h1>
+    </header> 
+
+    <!-- Area for the main contents -->
+    <main>
+        <h2 id="title"></h2>
+        <p id="description"></p>
+        <h3 id="question"></h3>
+        <ul id="list">
+            <li id="1"></li>
+            <li id="2"></li>
+            <li id="3"></li>
+            <li id="4"></li>
+            <li id="5"></li>
+        </ul>
+        <button id="start"></button>
+        <h4 id="result"></h4>
+        <form>
+            <label for="initial">Enter initials</label>
+            <input type="text" id="initial" name="initial">
+            <botton id="submit">Submit</botton>
+        </form>
+        <div class="button-container">
+            <button id="back">Go back</button>
+            <button id="clear">Clear Highscores</button>
+        </div>
+    </main>
+    <script src="./assets/js/data.js"></script>
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>
