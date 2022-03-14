@@ -17,6 +17,7 @@ var clearButton = document.querySelector("#clear");
 var timeInitialValue = 15;
 var timeRemain; 
 var timeInterval;
+// var resultInterval;
 
 // User Score variable
 var userScore;
@@ -27,53 +28,48 @@ var top5Scorer = [];
 var quizIndex;
 
 // mouseover listener of the button with id="start"
-function startBtnCursorChange() {
-    startButton.setAttribute("style", "font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; cursor: pointer;");
-    return;
+function cursorChange(event) {
+    event.target.style.cursor = "pointer";
 }
+
+// function startBtnCursorChange() {
+//     startButton.setAttribute("style", "font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; cursor: pointer;");
+//     return;
+// }
 
 // mouseover listener of the button with id="submit"
-function submitBtnCursorChange() {
-    submitButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; cursor: pointer;");
-    return;
-}
+// function submitBtnCursorChange() {
+//     submitButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; cursor: pointer;");
+//     return;
+// }
 
-// mouseover listener of the button with id="back"
-function backBtnCursorChange() {
-    backButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; margin-right: 10px; cursor: pointer;");
-    return;
-}
+// // mouseover listener of the button with id="back"
+// function backBtnCursorChange() {
+//     backButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; margin-right: 10px; cursor: pointer;");
+//     return;
+// }
 
-// mouseover listener of the button with id="clear"
-function clearBtnCursorChange() {
-    clearButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; cursor: pointer;");
-    return;
-}
+// // mouseover listener of the button with id="clear"
+// function clearBtnCursorChange() {
+//     clearButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; cursor: pointer;");
+//     return;
+// }
 
-// 
-function viewHsCursorChange() {
-    // viewHighScore.setAttribute("style", "color: purple; padding: 10px; font-size: 1.5rem; cursor: pointer;");
-    viewHighScore.style.cursor = "pointer";
-}
+// // 
+// function viewHsCursorChange() {
+//     // viewHighScore.setAttribute("style", "color: purple; padding: 10px; font-size: 1.5rem; cursor: pointer;");
+//     viewHighScore.style.cursor = "pointer";
+// }
 
 function startQuiz() {   
     // Remove eventlistener from startButton
-    startButton.removeEventListener("mouseover", startBtnCursorChange);
+    // startButton.removeEventListener("mouseover", startBtnCursorChange);
+    startButton.removeEventListener("mouseover", cursorChange);
     startButton.removeEventListener("click", startQuiz);
 
     // Starts timer, intial value is 75 secs
     timeRemain = timeInitialValue;
     time.textContent = "Time: " + timeRemain;
-    timeInterval = setInterval(() => {
-        if(timeRemain <= 0) {
-            clearInterval(timeInterval);
-            gameResult();
-        }
-        else{
-            timeRemain--;
-        }        
-        time.textContent = "Time: " + timeRemain;
-    }, 1000);
 
     // Clear contents of the main page
     title.setAttribute("style", "display: none");
@@ -83,6 +79,7 @@ function startQuiz() {
     // initialize user score
     userScore = 0;
     quizIndex = 0;
+
     // function call to display quiz
     showQuiz(quizIndex);
 }
@@ -114,6 +111,18 @@ function showQuiz(index) {
         ulEl.addEventListener("mouseout", multiChoiceBgColorChange);
         ulEl.addEventListener("click", checkAnswer);
     }
+
+    timeInterval = setInterval(() => {
+        if(timeRemain <= 0) {
+            clearInterval(timeInterval);
+            gameResult();
+            return;
+        }
+        else{
+            timeRemain--;
+            time.textContent = "Time: " + timeRemain;
+        }        
+    }, 1000);
 }
 
 function checkAnswer(event) {
@@ -122,23 +131,29 @@ function checkAnswer(event) {
     // show "Wrong!!" message if it's incorrect
     if(element.id == quizData[quizIndex][5]) {
         console.log("Correct!!");
+        document.querySelector("#result").textContent = "Correct!";
         userScore++;
     }
     else {
         console.log("Wrong!!");
+        document.querySelector("#result").textContent = "Wrong!";
         timeRemain -=10;
     }
 
-    // if user went through all quesions, go to game result screen
-    // if there are any questions to be answered, show the next question
-    if(quizData.length === quizIndex+1) {
-        clearInterval(timeInterval);  // Stop timer
-        gameResult();
-    }
-    else {
-        quizIndex++;
-        showQuiz(quizIndex); // display the next question
-    }
+    var resultInterval = setTimeout(() => {
+        clearInterval(timeInterval);
+        document.querySelector("#result").textContent = "";
+        // if user went through all quesions, go to game result screen
+        // if there are any questions to be answered, show the next question
+        if(quizData.length === quizIndex+1) {
+            gameResult();
+            return;
+        }
+        else {
+            quizIndex++;
+            showQuiz(quizIndex); // display the next question
+        }
+    }, 500);
 }
 
 function gameResult() {
@@ -163,9 +178,10 @@ function gameResult() {
 
     document.querySelector("label").setAttribute("style", "display: inline-block");
     document.querySelector("#initial").setAttribute("style", "display: inline-block");
+    document.querySelector("#initial").value = "";
     submitButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px;");
 
-    submitButton.addEventListener("mouseover", submitBtnCursorChange);
+    submitButton.addEventListener("mouseover", cursorChange);
     submitButton.addEventListener("click", checkInitials);
 }
 
@@ -179,7 +195,7 @@ function checkInitials() {
     }
 
     // remove eventlistener from submitButton
-    submitButton.removeEventListener("mouseover", submitBtnCursorChange);
+    submitButton.removeEventListener("mouseover", cursorChange);
     submitButton.removeEventListener("click", checkInitials);
 
     makeHsList(enteredInitial.value, userScore);
@@ -221,18 +237,18 @@ function highScorePage() {
     }
 
     backButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px; margin-right: 10px");
-    backButton.addEventListener("mouseover", backBtnCursorChange);
+    backButton.addEventListener("mouseover", cursorChange);
     backButton.addEventListener("click", remEvtListenerNGoMain);
 
     clearButton.setAttribute("style", "display: inline-block; font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px;");
-    clearButton.addEventListener("mouseover", clearBtnCursorChange);
+    clearButton.addEventListener("mouseover", cursorChange);
     clearButton.addEventListener("click", clearHighscores);
 }
 
 function remEvtListenerNGoMain() {
-    backButton.removeEventListener("mouseover", backBtnCursorChange);
+    backButton.removeEventListener("mouseover", cursorChange);
     backButton.removeEventListener("click", remEvtListenerNGoMain);
-    clearButton.removeEventListener("mouseover", clearBtnCursorChange);
+    clearButton.removeEventListener("mouseover", cursorChange);
     clearButton.removeEventListener("click", clearHighscores);
 
     mainPage();
@@ -240,9 +256,10 @@ function remEvtListenerNGoMain() {
 
 function remEvtListenerNHighscores() {
     startButton.style.display = "none";
-    viewHighScore.removeEventListener("mouseover", viewHsCursorChange);
+    viewHighScore.removeEventListener("mouseover", cursorChange);
     viewHighScore.removeEventListener("click", remEvtListenerNHighscores);
-    startButton.removeEventListener("mouseover", startBtnCursorChange);
+    // startButton.removeEventListener("mouseover", startBtnCursorChange);
+    startButton.removeEventListener("mouseover", cursorChange);
     startButton.removeEventListener("click", startQuiz);
 
     highScorePage();
@@ -278,7 +295,8 @@ function mainPage() {
     startButton.textContent = "Start Quiz";
     startButton.setAttribute("style", "font-size: 1.2rem; color: white; background-color: purple; text-align: center; border: 1px purple solid; border-radius: 5px; padding: 2px 10px;");
     // Add eventlisteners for 'Start Quiz' 
-    startButton.addEventListener("mouseover", startBtnCursorChange);
+    // startButton.addEventListener("mouseover", startBtnCursorChange);
+    startButton.addEventListener("mouseover", cursorChange);
     startButton.addEventListener("click", startQuiz);
 
     for(var i = 0; i < liEl.length; i++) {
