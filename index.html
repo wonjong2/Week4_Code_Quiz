@@ -10,34 +10,49 @@
 </head>
 <body>
     <!-- Area for the 'View Highscore' and 'Time:XX' -->
-    <header>
+    <header class="header-container">
         <h1 id="highscore">View Highscore</h1>
-        <h1 id="time"></h1>
+        <h1 id="time">Time: 0</h1>
     </header> 
 
     <!-- Area for the main contents -->
     <main>
-        <h2 id="title"></h2>
-        <p id="description"></p>
-        <h3 id="question"></h3>
-        <ul id="list">
-            <li id="1"></li>
-            <li id="2"></li>
-            <li id="3"></li>
-            <li id="4"></li>
-            <li id="5"></li>
-        </ul>
-        <button id="start"></button>
-        <h4 id="result"></h4>
-        <form>
-            <label for="initial">Enter initials</label>
-            <input type="text" id="initial" name="initial">
-            <botton id="submit">Submit</botton>
-        </form>
-        <div class="button-container">
-            <button id="back">Go back</button>
-            <button id="clear">Clear Highscores</button>
-        </div>
+        <section class="firstpage-container">
+            <h2 id="title">Coding Quize Challenge</h2>
+            <p id="description">Try to answer the following code-related questions within the time limit. Keep in mind that incorrect answers will penalize your score/time by ten seconds!</p>
+            <button id="start">Start Quiz</button>
+        </section>
+
+        <section class="quiz-container">
+            <h3 id="question"></h3>
+            <ul id="list">
+                <li data-id="1"></li>
+                <li data-id="2"></li>
+                <li data-id="3"></li>
+                <li data-id="4"></li>
+                <h4 id="result"></h4>
+            </ul>
+        </section>
+
+        <section class="result-container">
+            <h2 id="result-title">All done!</h2>
+            <p id="score"></p>
+            <form>
+                <label for="initial">Enter initials</label>
+                <input type="text" id="initial" name="initial">
+                <button type="button" id="submit">Submit</button>
+            </form>
+        </section>
+
+        <section class="highscore-container">
+            <h2 id="highscore-title">Highscores(Top10)</h2>
+            <ul id="top10list"></ul>
+            <div class="button-container">
+                <button type="button" id="back">Go back</button>
+                <button type="button" id="clear">Clear Highscores</button>
+            </div>
+        </section>
+
     </main>
     <script src="./assets/js/data.js"></script>
     <script src="./assets/js/script.js"></script>

@@ -1,4 +1,11 @@
-header {
+:root {
+    --button-bg-color: purple;
+    --list-bg-color: rgb(209, 160, 209);
+    --dark-font-color: black;
+    --light-font-color: white;
+}
+
+.header-container {
     width: 100%;
     display: flex;
     align-items: center;
@@ -13,8 +20,156 @@ main {
     justify-content: center;
 }
 
-.button-container {
-    display: flex;
+.firstpage-container,.result-container {
+    width: 80%;
+    display: none;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+} 
+
+.quiz-container {
+    width: 80%;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+} 
+
+.highscore-container {
+    width: 80%;
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: ceneter;
+    margin-top: 70px;
+} 
+
+.button-container {
+    width: 100%; 
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#highscore {
+    color: var(--button-bg-color);
+    padding: 10px;
+    font-size: 1.5rem;
+}
+
+#time {
+    color: var(--dark-font-color);
+    padding: 10px;
+    font-size: 1.5rem;
+}
+
+#title,#result-title,#highscore-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--dark-font-color);
+    margin-bottom: 1rem;
+}
+
+#description {
+    width: 100%;
+    font-size: 1.2rem;
+    color: var(--dark-font-color);
+    text-align: center;
+    text-align-last: center;
+    margin-bottom: 1rem;
+}
+
+#question {
+    width: 100%;
+    font-size: 1.5rem;
+    line-height: 130%;
+    text-align: left ;
+    text-align-last: left ;
+    white-space: pre-wrap ;  
+    overflow-wrap: normal;
+}
+
+#back {
+    display: inline-block;
+    font-size: 1.2rem;
+    color: var(--light-font-color);
+    background-color: var(--button-bg-color);
+    text-align: center;
+    border: 1px var(--button-bg-color) solid;
+    border-radius: 5px;
+    padding: 2px 10px;
+    margin-right: 10px;
+}
+
+#clear {
+    display: inline-block;
+    font-size: 1.2rem;
+    color: var(--light-font-color);
+    background-color: var(--button-bg-color);
+    text-align: center;
+    border: 1px var(--button-bg-color) solid;
+    border-radius: 5px;
+    padding: 2px 10px;
+}
+
+#start {
+    font-size: 1.2rem;
+    color: var(--light-font-color);
+    background-color: var(--button-bg-color);
+    text-align: center;
+    border: 1px var(--button-bg-color) solid;
+    border-radius: 5px;
+    padding: 2px 10px;
+}
+
+#submit {
+    font-size: 1.2rem;
+    color: var(--light-font-color);
+    background-color: var(--button-bg-color);
+    text-align: center;
+    border: 1px var(--button-bg-color) solid;
+    border-radius: 5px;
+    padding: 2px 10px;
+}
+
+#list,#top10list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+/* 0315 : Quiz UI */
+#list li {
+    color: var(--light-font-color);
+    font-size: 1.2rem;
+    border: 1px var(--button-bg-color) solid;
+    border-radius: 5px;
+    background-color: var(--button-bg-color);
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+#result {
+    width: 100%;
+    font-weight: bold;
+    font-style: italic;
+    align-self: flex-start;
+    font-size: 2rem;
+    margin-top: 1.5rem;
+}
+
+#top10list li {
+    width: 100%;
+    display: list-item;
+    color: var(--dark-font-color);
+    font-size: 1.2rem;
+    background-color: var(--list-bg-color);
+    border: 1px var(--list-bg-color) solid;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 2px;
 }
