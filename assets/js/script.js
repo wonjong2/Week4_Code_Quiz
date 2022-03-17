@@ -33,7 +33,7 @@ var comeFrom;
 
 // add event listeners for mouse events
 viewHighScore.addEventListener("mouseover", cursorChange);
-viewHighScore.addEventListener("click", highScorePage);
+viewHighScore.addEventListener("click", showHighscoreScreen);
 startButton.addEventListener("mouseover", cursorChange);
 startButton.addEventListener("click", startQuiz);
 submitButton.addEventListener("mouseover", cursorChange);
@@ -50,10 +50,6 @@ for(var k = 0; k < 4; k++) {
 
 // add event listener for keyboard event on the input element
 inputEl.addEventListener("keydown", checkInitials); 
-
-// ****************************************************************
-// ***** functions for mouseover/mouseout/click/keydown events *****
-// ****************************************************************
 
 // change cursor property of all buttons
 function cursorChange(event) {
@@ -111,8 +107,9 @@ function checkAnswer(event) {
     }, 700);
 }
 
+// if user entered the initial correctly, then go to the highscore screen
 function checkInitials(event) {
-    // 
+    // when unexpected key event comes, ignore it
     if(!(event.type === "keydown" && event.key === "Enter" ) && !(event.type === "onclick")) {
         return;
     }
@@ -126,16 +123,16 @@ function checkInitials(event) {
         return;
     }
 
-    makeHsList(enteredInitial.value, userScore);
-    comeFrom = "First page";
-    highScorePage();
+    makeHighscoreList(enteredInitial.value, userScore);
+    comeFrom = "First screen";  // set return point from the highscore screen
+    showHighscoreScreen();
 }
 
 
 // Set initialize variables and then call showQuizScreen function
 function startQuiz() { 
     // set return point from the highscore screen  
-    comeFrom = "Quiz page";
+    comeFrom = "Quiz screen";
 
     // set values used in "Time: XX"
     timeRemain = timeInitialValue;
@@ -156,6 +153,7 @@ function startQuiz() {
     showQuizScreen(quizNumber);
 }
 
+// show index-th question
 function showQuizScreen(index) {
     // put quiz data into elements
     question.textContent = quizData[index][0];
@@ -174,7 +172,7 @@ function showQuizScreen(index) {
         }
     }
 
-    // timer starts
+    // timer starts, it stops whenever result shown
     timeInterval = setInterval(() => {
         if(timeRemain <= 0) {
             clearInterval(timeInterval);
@@ -191,7 +189,7 @@ function showQuizScreen(index) {
 // show the final result
 function showFinalResultScreen() {
     // set return point from the highscore screen  
-    comeFrom = "Result page";
+    comeFrom = "Result screen";
 
     // set contents properly
     time.textContent = "Time: 0";
@@ -208,7 +206,7 @@ function showFinalResultScreen() {
 
 // show the final result when return from the highscore screen
 function backTofinalResultScreen() {
-    comeFrom = "Result page";
+    comeFrom = "Result screen";
     time.textContent = "Time: 0";
     document.querySelector("#score").textContent = "Your final score is " + userScore;
 
@@ -220,8 +218,8 @@ function backTofinalResultScreen() {
 }
 
 
-// Add user score and initials to the Top5 list and then sort it
-function makeHsList(initial, score) {
+// Add user score and initials to the Top10 list and then sort it
+function makeHighscoreList(initial, score) {
     top10Scorer.push([score, initial]);
     top10Scorer.sort(function(a,b){return b[0]-a[0]});
     while(top10Scorer.length > 10){
@@ -231,8 +229,10 @@ function makeHsList(initial, score) {
     return;
 }
 
-function highScorePage() {
-    if(comeFrom === "Quiz page") {
+// show Top10 highscore list
+function showHighscoreScreen() {
+    // if screen transition from 'Quiz screen'
+    if(comeFrom === "Quiz screen") {
         clearInterval(timeInterval);
         clearInterval(resultInterval);        
     }
@@ -246,11 +246,12 @@ function highScorePage() {
     setDisplayProperty(".result-container", "none");
     setDisplayProperty(".highscore-container", "flex");
 
+    // make li elements with the top10 highscore
     for(var i = 0; i < maxNum; i++) {
-        if((i + 1) <= curListLength) {
+        if((i + 1) <= curListLength) {  // if li element exists, just replace 'textContent' with new one.
             highscoreList.children[i].textContent = i+1 + ". " + top10Scorer[i][1] + " - " + top10Scorer[i][0];
         }
-        else {
+        else {  // if additional li elements needed, create new li elements and add them to the ul element with ID="top10list"
             var newListItem = document.createElement("li");
             newListItem.textContent = i+1 + ". " + top10Scorer[i][1] + " - " + top10Scorer[i][0];
             highscoreList.appendChild(newListItem);
@@ -259,22 +260,23 @@ function highScorePage() {
 
 }
 
+// when 'Go back' button clicks, decide where to go
 function decideToWhere() {
     switch(comeFrom){
-        case "Quiz page":
+        case "Quiz screen":
             returnToQuiz();
             break;
-        case "Result page":
+        case "Result screen":
             backTofinalResultScreen();
             break;
         default:
-            mainPage();
+            showFirstScreen();
             break;
     }
 }
 
 function returnToQuiz() {
-    // Clear contents of the main page
+    // Clear contents of the first screen
     setDisplayProperty(".header-container", "flex");
     setDisplayProperty(".quiz-container", "flex");
     setDisplayProperty(".firstpage-container", "none");
@@ -285,6 +287,7 @@ function returnToQuiz() {
     showQuizScreen(quizNumber);
 }
 
+// When 'Clear Highscore' button clicks, delete all lists including li elements and data in local Storage
 function clearHighscores() {
     // var curListLength = highscoreList.children.length;
     while(highscoreList.firstElementChild) {
@@ -292,29 +295,32 @@ function clearHighscores() {
     }
     top10Scorer = [];
     localStorage.removeItem("top10");
-    highScorePage();
+    showHighscoreScreen();
 }
 
-function mainPage() {
+// show the first page when open the web site
+function showFirstScreen() {
     setDisplayProperty(".header-container", "flex");
     setDisplayProperty(".firstpage-container", "flex");
     setDisplayProperty(".quiz-container", "none");
     setDisplayProperty(".result-container", "none");
     setDisplayProperty(".highscore-container", "none");
-    comeFrom = "First page";
+    comeFrom = "First screen";
 }
 
+// function to change the value of the display property
 function setDisplayProperty(selector, value) {
     document.querySelector(selector).style.display = value;
     return;
 }
 
+// load the top10 highscore date from localStorage and initialize the array 
 function init() {
     top10Scorer = JSON.parse(localStorage.getItem("top10"));
     if(!top10Scorer) {
         top10Scorer = [];
     }
-    mainPage();
+    showFirstScreen();
 }
 
 init();
