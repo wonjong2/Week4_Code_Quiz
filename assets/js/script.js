@@ -60,6 +60,11 @@ function cursorChange(event) {
 function multiChoiceBgColorChange(event) {
     var element = event.target;
 
+    // ignore mouseover event triggered by touch event
+    if(event.sourceCapabilities.firesTouchEvents) {
+        return;
+    }
+
     if(event.type == "mouseover") {
         element.style.background = "rgb(209, 160, 209)";
         element.style.border = "1px rgb(209, 160, 209) solid"
@@ -83,7 +88,8 @@ function checkAnswer(event) {
     else { // if incorrect, show "Wrong!" in red
         document.querySelector("#result").textContent = "Wrong!";
         document.querySelector("#result").style.color = "red";
-        timeRemain -=10;
+        timeRemain = (timeRemain>9)?timeRemain-9:0;
+        time.textContent = "Time: " + timeRemain;
     }
 
     // timer starts to show the result for 0.7s
@@ -96,7 +102,7 @@ function checkAnswer(event) {
 
         // if user went through all quesions, go to the final result screen
         // if there are any questions to be answered, show the next question
-        if(quizData.length === quizNumber+1) {
+        if((quizData.length === quizNumber+1) || (timeRemain <= 0)) {
             showFinalResultScreen(); // go to the final result screen
             return;
         }
@@ -104,13 +110,13 @@ function checkAnswer(event) {
             quizNumber++;  // quiz number increament
             showQuizScreen(quizNumber); // display the next question
         }
-    }, 700);
+    }, 500);
 }
 
 // if user entered the initial correctly, then go to the highscore screen
 function checkInitials(event) {
     // when unexpected key event comes, ignore it
-    if(!(event.type === "keydown" && event.key === "Enter" ) && !(event.type === "onclick")) {
+    if(!(event.type === "keydown" && event.key === "Enter" ) && !(event.type === "click")) {
         return;
     }
     var enteredInitial = document.querySelector("#initial");
@@ -123,7 +129,7 @@ function checkInitials(event) {
         return;
     }
 
-    makeHighscoreList(enteredInitial.value, userScore);
+    makeHighscoreList(userScore, enteredInitial.value);
     comeFrom = "First screen";  // set return point from the highscore screen
     showHighscoreScreen();
 }
@@ -219,7 +225,11 @@ function backTofinalResultScreen() {
 
 
 // Add user score and initials to the Top10 list and then sort it
-function makeHighscoreList(initial, score) {
+function makeHighscoreList(score, initial) {
+    top10Scorer = JSON.parse(localStorage.getItem("top10"));
+    if(!top10Scorer) {
+        top10Scorer = [];
+    }
     top10Scorer.push([score, initial]);
     top10Scorer.sort(function(a,b){return b[0]-a[0]});
     while(top10Scorer.length > 10){
@@ -231,11 +241,19 @@ function makeHighscoreList(initial, score) {
 
 // show Top10 highscore list
 function showHighscoreScreen() {
+    var i;
     // if screen transition from 'Quiz screen'
     if(comeFrom === "Quiz screen") {
         clearInterval(timeInterval);
         clearInterval(resultInterval);        
     }
+
+    // load highscore lists from the localStorage
+    top10Scorer = JSON.parse(localStorage.getItem("top10"));
+    if(!top10Scorer) {
+        top10Scorer = [];
+    }
+
     // get the number of li elements that already exist
     var curListLength = highscoreList.children.length;
     var maxNum = (top10Scorer.length<10)?top10Scorer.length:10;
@@ -247,7 +265,7 @@ function showHighscoreScreen() {
     setDisplayProperty(".highscore-container", "flex");
 
     // make li elements with the top10 highscore
-    for(var i = 0; i < maxNum; i++) {
+    for(i = 0; i < maxNum; i++) {
         if((i + 1) <= curListLength) {  // if li element exists, just replace 'textContent' with new one.
             highscoreList.children[i].textContent = i+1 + ". " + top10Scorer[i][1] + " - " + top10Scorer[i][0];
         }
@@ -258,6 +276,12 @@ function showHighscoreScreen() {
         }
     }
 
+    // If the number of existing li elements is greater than highscore lists stored in localStorage, remove useless li elements
+    if(curListLength > top10Scorer.length) {
+        for (i = 0; i < curListLength-top10Scorer.length; i++) {
+            highscoreList.removeChild(highscoreList.lastElementChild)
+        }
+    }
 }
 
 // when 'Go back' button clicks, decide where to go
@@ -314,13 +338,4 @@ function setDisplayProperty(selector, value) {
     return;
 }
 
-// load the top10 highscore date from localStorage and initialize the array 
-function init() {
-    top10Scorer = JSON.parse(localStorage.getItem("top10"));
-    if(!top10Scorer) {
-        top10Scorer = [];
-    }
-    showFirstScreen();
-}
-
-init();
+showFirstScreen();

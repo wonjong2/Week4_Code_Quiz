@@ -2,13 +2,23 @@
 
 ## Description
 
-This Web site generates a password to suggest user. 
-When user clicks "Generate Password" button, it asks user about some questions such as 'how many characters in a password' and 'what types of characters should be included in it'.
-After user answers these questions, a new password which is generated based on user's answer will appear on the screen.
+This Web site provides Coding Quiz about JavaScript and manages Top10 highscore lists.
 
-- Use 
-- Store top5-highscore data in localStorage
-- 
+- Make five major containers for different screens in HTML file
+    - .header-container : It includes elements for "View Highscore" and "Time: XX"
+    - .firstpage-container : It includes elements to configure the first screen shown when a user opens the web site.
+    - .quiz-container : It includes elements to configure the quiz screen 
+    - .result-container : It includes elements to configure the final result screen
+    - .highscore-container : It includes elements to configure the highscore screen
+- To show proper contents on the screen, set 'display' property of specific containers to 'flex' and other containers to 'none'
+    - For example, in the quiz screen, only .header-container and quiz-container have 'display: flex' and others have 'display: none' 
+- Basic style for each elements are defined in CSS file
+- Use JavaScript to change contents on the screen according to user input
+- Use setInterval()/setTimeout() to execute time related functions
+- Store and load top10 highscore data in localStorage
+- Use event listener to interact with various events
+- Dynamically add li elements according to the length of the highscore list
+- Seperated js file("data.js") contains data of quiz questions
 
 ## Web Site's URL
 
@@ -20,20 +30,30 @@ https://wonjong2.github.io/Week4_Code_Quiz/
 
 ## Usage
 
-- User clicks "Generate Passworkd" button to have a new password.
-- If user inputs the number not in the valid range(8~128), the web site asks user it again until user inputs valid number.
-- If user doesn't select any character types, the web site asks user them again until user selects at least one character type.
-- When all inputs from user are validated, the web site generates a new password and display it on the screen.
-- __Simple Demo__ : https://watch.screencastify.com/v/ImMADFavFRHkFsOV2UiU
+- When a user clicks "Start Quiz" button, Coding Quiz starts and the timer runs
+- A user can select the one among the multi-choice shown on the screen
+    - Background color of the item changed when the mouse is over it.
+    - When a user selects the one, the result of whether the answer is correct or not is displayed for 0.5sec
+    - If the incorrect answer, timer value decreased by 10sec
+- When all questions are answered or the timer reaches 0, it shows your score and request you to enter your initials
+    - If a user clicks "Submit" button without any input, it requests you to enter initials until you fill something.
+- When a user clicks "View highscore" or clicks "Submit" button with initials, it shows the Top10 highscore lists
+    - A user can click "View Highscore" on various places like the first screen, the quiz screen and the final result screen
+    - Therefore, if a user clicks "Go back" button, it leads to previous screen. (except for the case of clicking "Submit" button with initials)
+
+- __Simple Demo__ : https://watch.screencastify.com/v/pysN5OX8p5OMCKZjnfAX
 
 Please see the screenshots on this Website.
 
 - The first screen when user opens this web site.<br>
-    ![First Page](images/launchScreen.jpg)
+    ![First](/assets/images/firstScreen.png)
 
-- User needs to answer serveral questions. Please see the validation flow of the user inputs.<br>
-    ![Questions](/images/validateflow.jpg)
+- The quiz screen.<br>
+    ![quiz](/assets/images/quizScreen.png)
 
-- A new password shown on the screen. <br>
-    ![Result](/images/result.jpg) 
+- The final result screen <br>
+    ![Result](/assets/images/finalResultScreen.png)
+
+- The highscore screen <br>
+    ![highscore](/assets/images/top10highscore.png)
 
